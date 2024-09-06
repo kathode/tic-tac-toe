@@ -15,6 +15,7 @@ class Gameboard {
   #player1;
   #player2;
   #round;
+  #currentPlayer;
 
   #starterGameboard = [
     ["", "", ""],
@@ -41,8 +42,17 @@ class Gameboard {
   }
 
   renderGame() {
-    console.table(this.#gameboard);
-    return this.#gameboard;
+    const container = document.querySelector(".tic-tac-toe");
+    container.textContent = "";
+
+    for (const i in this.#gameboard.flat()) {
+      const cell = document.createElement("button");
+      cell.className = "cell";
+      cell.textContent = this.#gameboard.flat()[i];
+      cell.onclick = () => this.playRound(this.#currentPlayer, i);
+
+      container.appendChild(cell);
+    }
   }
 
   resetGame() {
@@ -61,7 +71,7 @@ class Gameboard {
     }, []);
   }
 
-  isWin(player) {
+  isGameWon(player) {
     const playerSelections = this.getPlayerSelections(player);
 
     return this.#winningScenarios.some((scenarios) => {
@@ -69,8 +79,8 @@ class Gameboard {
     });
   }
 
-  isDraw() {
-    return !this.isWin(this.#player1) && !this.isWin(this.#player2) && this.#round === 9;
+  isGameDraw() {
+    return !this.isGameWon(this.#player1) && !this.isGameWon(this.#player2) && this.#round === 9;
   }
 
   getRound() {
@@ -86,7 +96,26 @@ class Gameboard {
 
     this.#gameboard[rowIndex][cellIndex] = player.getSign();
     this.#round += 1;
+
+    this.setNextPlayer(player);
     this.renderGame();
+  }
+
+  startGame() {
+    this.#currentPlayer = Math.random() > 0.5 ? this.#player1 : this.#player2;
+    this.renderGame();
+  }
+
+  setNextPlayer(currentPlayer) {
+    if (currentPlayer === this.#player1) {
+      this.#currentPlayer = this.#player2;
+    } else {
+      this.#currentPlayer = this.#player1;
+    }
+  }
+
+  getCurrentPlayer() {
+    return this.#currentPlayer;
   }
 }
 
@@ -111,7 +140,10 @@ class Bot extends Player {
   }
 }
 
-const kathy = new Player("Kathy", ":)");
-const qi = new Player("Qi", "HI");
+const kathy = new Player("Kathy", "X");
+const qi = new Player("Qi", "O");
 
 const game = new Gameboard(kathy, qi);
+
+// Initialise tic tac toe grid
+game.startGame();
