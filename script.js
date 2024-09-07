@@ -20,23 +20,25 @@ class Gameboard {
   }
 
   renderBoard() {
-    for (const index in this.#layout.flat()) {
+    for (const index in this.#layout) {
       const cell = document.createElement("button");
       cell.className = "cell";
       cell.dataset.attribute = index;
-      cell.textContent = this.#layout.flat()[index];
+      cell.textContent = this.#layout[index];
       this.#container.appendChild(cell);
     }
   }
 
-  getLayout() {
+  getLayout(index) {
+    if (!isNaN(index) && index >= 0 && index < 9) {
+      return this.#layout[index];
+    }
+
     return this.#layout;
   }
 
   setLayout(index, marker) {
-    const rowIndex = Math.floor(index / 3);
-    const cellIndex = index % 3;
-    this.#layout[rowIndex][cellIndex] = marker;
+    this.#layout[index] = marker;
 
     const cellPrev = this.#container.children[index];
     const cellNew = document.createElement("button");
@@ -108,15 +110,10 @@ class Game {
     const container = document.querySelector(".tic-tac-toe");
 
     container.addEventListener("click", (event) => {
-      const selection = Number(event.target.dataset.attribute);
+      const index = Number(event.target.dataset.attribute);
+      if (this.#gameboard.getLayout(index)) return; // Prevents overriding previous player selection
 
-      const rowIndex = Math.floor(selection / 3);
-      const cellIndex = selection % 3;
-
-      // prevents overrides
-      if (this.#gameboard.getLayout()[rowIndex][cellIndex]) return;
-
-      this.#gameboard.setLayout(selection, this.#currentPlayer.getSign());
+      this.#gameboard.setLayout(index, this.#currentPlayer.getSign());
       this.setNextPlayer(this.#currentPlayer);
     });
   }
