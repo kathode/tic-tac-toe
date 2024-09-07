@@ -155,12 +155,13 @@ class Game {
       if (this.isGameWon(this.#currentPlayer)) {
         this.#currentPlayer.setScore(this.#currentPlayer.getScore() + 1);
         this.highlightWinningCells();
-        this.rematch();
         this.displayScores();
+        this.rematch();
 
         container.removeEventListener("click", handleGamePlay);
       } else if (this.isGameDraw()) {
         this.rematch();
+        container.removeEventListener("click", handleGamePlay);
       } else {
         this.setNextPlayer(this.#currentPlayer);
         this.#moves++;
@@ -273,10 +274,10 @@ class Bot extends Player {
   }
 }
 
-const kathy = new Player("Kathy", "X");
-const qi = new Player("Qi", "O");
+const player1 = new Player("Player1", "X");
+const player2 = new Player("Player2", "O");
 
-const game = new Game(kathy, qi);
+const game = new Game(player1, player2);
 
 // Initialise tic tac toe grid
 game.startGame();
