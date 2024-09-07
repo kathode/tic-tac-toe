@@ -6,8 +6,7 @@ body {
   height: 100vh;
   width: 100vw;
   margin: 0;
-  display: grid;
-  place-items: center;
+  background: #424c55;
 }
 
 *,
@@ -20,11 +19,18 @@ body {
   --cell-size: 50px;
 }
 
-.tic-tac-toe {
+.wrapper {
+  color: white;
   display: grid;
   place-items: center;
+  padding: 2rem;
+}
+
+.tic-tac-toe {
+  display: grid;
 
   grid-template-columns: repeat(3, var(--cell-size));
+  grid-template-rows: repeat(3, var(--cell-size));
   gap: 4px;
 }
 
@@ -49,5 +55,13 @@ body {
 }
 
 .cell.win {
-  background: rgb(142, 204, 106);
+  background: #8ecc6a;
+}
+
+.rematch-options {
+  opacity: 0;
+}
+
+.rematch-options p {
+  user-select: none;
 }
