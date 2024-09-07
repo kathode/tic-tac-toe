@@ -98,13 +98,25 @@ body {
 }
 
 .statistics p.player-scores.active::before {
-  content: " ";
+  content: "";
   width: 10px;
   height: 10px;
   border-radius: 50%;
   background-color: rgb(16, 227, 16);
   position: absolute;
-  left: -15%;
+  left: -21px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.statistics p.player-scores.winner-winner-chicken-dinner::after {
+  content: "";
+  width: 18.4px;
+  height: 18.4px;
+  background-size: cover;
+  background-image: url("./confetti.svg");
+  position: absolute;
+  right: -5%;
   top: 50%;
   transform: translateY(-50%);
 }
