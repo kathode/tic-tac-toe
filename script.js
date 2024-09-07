@@ -125,6 +125,33 @@ class Game {
     return this.#currentPlayer;
   }
 
+  displayScores() {
+    const statistics = document.querySelector(".statistics");
+
+    for (const pTag of statistics.children) {
+      const oldSpan = pTag.children[0];
+      const newSpan = document.createElement("span");
+
+      switch (oldSpan.id) {
+        case "player-1-score":
+          newSpan.textContent = this.#player1.getScore();
+          newSpan.id = oldSpan.id;
+          break;
+        case "player-2-score":
+          newSpan.textContent = this.#player2.getScore();
+          newSpan.id = oldSpan.id;
+          break;
+        case "round-count":
+          newSpan.textContent = this.getRound();
+          newSpan.id = oldSpan.id;
+        default:
+          break;
+      }
+
+      pTag.replaceChild(newSpan, oldSpan);
+    }
+  }
+
   playRound() {
     const container = document.querySelector(".tic-tac-toe");
 
@@ -135,8 +162,10 @@ class Game {
       this.#gameboard.setLayout(index, this.#currentPlayer.getSign());
 
       if (this.isGameWon(this.#currentPlayer)) {
+        this.#currentPlayer.setScore(this.#currentPlayer.getScore() + 1);
         this.highlightWinningCells();
         this.rematch();
+        this.displayScores();
 
         container.removeEventListener("click", handleGamePlay);
       } else {
@@ -166,7 +195,11 @@ class Game {
         hideOptionsAfterClick();
       }
       if (no) {
-        this.#round = 0;
+        this.#round = 1;
+        this.#player1.setScore(0);
+        this.#player2.setScore(0);
+        this.displayScores();
+
         hideOptionsAfterClick();
       }
     };
@@ -193,10 +226,12 @@ class Game {
 class Player {
   #name;
   #sign;
+  #score;
 
   constructor(name, sign) {
     this.#name = name;
     this.#sign = sign;
+    this.#score = 0;
   }
 
   getSign() {
@@ -205,6 +240,14 @@ class Player {
 
   getName() {
     return this.#name;
+  }
+
+  getScore() {
+    return this.#score;
+  }
+
+  setScore(score) {
+    this.#score = score;
   }
 }
 
