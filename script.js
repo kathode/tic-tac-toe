@@ -142,6 +142,7 @@ class Game {
 
       if (this.isGameWon(this.#currentPlayer)) {
         this.#currentPlayer.setScore(this.#currentPlayer.getScore() + 1);
+        this.showWinnerIndicator();
         this.highlightWinningCells();
         this.displayScores();
         this.rematch();
@@ -170,6 +171,7 @@ class Game {
       this.#moves = 0;
       this.startGame();
       this.displayScores();
+      this.removeWinnerIndicator();
     };
 
     const handlePlayAgain = (event) => {
@@ -220,6 +222,25 @@ class Game {
       player2.classList.add("active");
       player1.classList.remove("active");
     }
+  }
+
+  showWinnerIndicator() {
+    const statistics = document.querySelector(".statistics");
+    const [player1, player2] = statistics.children;
+
+    if (this.#currentPlayer === this.#player1) {
+      player1.classList.add("winner-winner-chicken-dinner");
+    } else {
+      player2.classList.add("winner-winner-chicken-dinner");
+    }
+  }
+
+  removeWinnerIndicator() {
+    const statistics = document.querySelector(".statistics");
+    const [player1, player2] = statistics.children;
+
+    player2.classList.remove("winner-winner-chicken-dinner");
+    player1.classList.remove("winner-winner-chicken-dinner");
   }
 }
 
