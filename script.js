@@ -227,14 +227,10 @@ class Game {
 
     if (this.#currentPlayer === this.#player1) {
       player1.classList.add("active");
-    } else {
-      player1.classList.remove("active");
-    }
-
-    if (this.#currentPlayer === this.#player2) {
-      player2.classList.add("active");
-    } else {
       player2.classList.remove("active");
+    } else {
+      player2.classList.add("active");
+      player1.classList.remove("active");
     }
   }
 }
