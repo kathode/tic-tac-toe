@@ -7,6 +7,10 @@ body {
   width: 100vw;
   margin: 0;
   background: #424c55;
+
+  color: white;
+  display: grid;
+  place-items: center;
 }
 
 *,
@@ -19,11 +23,9 @@ body {
   --cell-size: 50px;
 }
 
-.wrapper {
-  color: white;
-  display: grid;
-  place-items: center;
-  padding: 2rem;
+.ui {
+  display: flex;
+  gap: 2rem;
 }
 
 .tic-tac-toe {
@@ -64,4 +66,26 @@ body {
 
 .rematch-options p {
   user-select: none;
+}
+
+.statistics p {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.statistics p span:nth-child(2) {
+  justify-self: center;
+}
+
+.statistics p.player-scores.active::before {
+  content: " ";
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: rgb(16, 227, 16);
+  position: absolute;
+  left: -15%;
+  top: 50%;
+  transform: translateY(-50%);
 }
