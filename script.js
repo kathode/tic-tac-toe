@@ -68,6 +68,7 @@ class Game {
 
   #gameboard = new Gameboard();
   #round = 1;
+  #moves = 0;
 
   constructor(player1, player2) {
     this.#player1 = player1;
@@ -110,7 +111,7 @@ class Game {
   }
 
   isGameDraw() {
-    return !this.isGameWon(this.#player1) && !this.isGameWon(this.#player2);
+    return !this.isGameWon(this.#player1) && !this.isGameWon(this.#player2) && this.#moves === 8;
   }
 
   getRound() {
@@ -158,8 +159,11 @@ class Game {
         this.displayScores();
 
         container.removeEventListener("click", handleGamePlay);
+      } else if (this.isGameDraw()) {
+        this.rematch();
       } else {
         this.setNextPlayer(this.#currentPlayer);
+        this.#moves++;
       }
     };
 
@@ -173,6 +177,8 @@ class Game {
     const hideOptionsAfterClick = () => {
       rematch.removeEventListener("click", handlePlayAgain);
       rematch.style.opacity = 0;
+
+      this.#moves = 0;
       this.startGame();
       this.displayScores();
     };
