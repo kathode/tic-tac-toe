@@ -11,17 +11,40 @@
 // Hard bot 5-7 win conditions
 
 class Gameboard {
-  #gameboard;
-  #player1;
-  #player2;
-  #round;
-  #currentPlayer;
-
   #starterGameboard = [
     ["", "", ""],
     ["", "", ""],
     ["", "", ""],
   ];
+  #layout = this.#starterGameboard.map((row) => [...row]);
+
+  renderBoard() {
+    const container = document.querySelector(".tic-tac-toe");
+    container.textContent = "";
+
+    for (const index in this.#layout.flat()) {
+      const cell = document.createElement("button");
+      cell.className = "cell";
+      cell.textContent = this.#layout.flat()[index];
+      cell["data-attribute"] = index;
+
+      container.appendChild(cell);
+    }
+  }
+
+  getLayout() {
+    return this.#layout;
+  }
+
+  resetGame() {
+    this.#layout = this.#starterGameboard.map((row) => [...row]);
+  }
+}
+
+class Game {
+  #player1;
+  #player2;
+  #currentPlayer;
 
   #winningScenarios = [
     [0, 1, 2],
@@ -34,33 +57,16 @@ class Gameboard {
     [3, 4, 5],
   ];
 
+  #gameboard = new Gameboard();
+  #round = 1;
+
   constructor(player1, player2) {
-    this.#gameboard = this.#starterGameboard.map((row) => [...row]);
     this.#player1 = player1;
     this.#player2 = player2;
-    this.#round = 1;
-  }
-
-  renderGame() {
-    const container = document.querySelector(".tic-tac-toe");
-    container.textContent = "";
-
-    for (const i in this.#gameboard.flat()) {
-      const cell = document.createElement("button");
-      cell.className = "cell";
-      cell.textContent = this.#gameboard.flat()[i];
-      cell.onclick = () => this.playRound(this.#currentPlayer, i);
-
-      container.appendChild(cell);
-    }
-  }
-
-  resetGame() {
-    this.#gameboard = this.#starterGameboard.map((row) => [...row]);
   }
 
   getPlayerSelections(player) {
-    return this.#gameboard.reduce((acc, row, rowIndex) => {
+    return this.#gameboard.getLayout().reduce((acc, row, rowIndex) => {
       for (const cellIndex in row) {
         if (row[cellIndex] === player.getSign()) {
           acc.push(rowIndex * 3 + Number(cellIndex));
@@ -87,23 +93,31 @@ class Gameboard {
     return this.#round;
   }
 
-  playRound(player, selection) {
-    const rowIndex = Math.floor(selection / 3);
-    const cellIndex = selection % 3;
+  playRound() {
+    const container = document.querySelector(".tic-tac-toe");
 
-    // prevents overrides
-    if (this.#gameboard[rowIndex][cellIndex]) return;
+    container.addEventListener("click", (event) => {
+      const selection = Number(event.target["data-attribute"]);
 
-    this.#gameboard[rowIndex][cellIndex] = player.getSign();
-    this.#round += 1;
+      const rowIndex = Math.floor(selection / 3);
+      const cellIndex = selection % 3;
 
-    this.setNextPlayer(player);
-    this.renderGame();
+      // prevents overrides
+      if (this.#gameboard.getLayout()[rowIndex][cellIndex]) return;
+
+      this.#gameboard.getLayout()[rowIndex][cellIndex] = this.#currentPlayer.getSign();
+      this.#round += 1;
+
+      console.log(this.isGameWon(this.#currentPlayer));
+      this.setNextPlayer(this.#currentPlayer);
+      this.#gameboard.renderBoard();
+    });
   }
 
   startGame() {
     this.#currentPlayer = Math.random() > 0.5 ? this.#player1 : this.#player2;
-    this.renderGame();
+    this.#gameboard.renderBoard();
+    this.playRound();
   }
 
   setNextPlayer(currentPlayer) {
@@ -143,7 +157,7 @@ class Bot extends Player {
 const kathy = new Player("Kathy", "X");
 const qi = new Player("Qi", "O");
 
-const game = new Gameboard(kathy, qi);
+const game = new Game(kathy, qi);
 
 // Initialise tic tac toe grid
 game.startGame();
