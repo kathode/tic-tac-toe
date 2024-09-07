@@ -11,29 +11,45 @@
 // Hard bot 5-7 win conditions
 
 class Gameboard {
+  #layout;
+  #container;
   #starterGameboard = [
     ["", "", ""],
     ["", "", ""],
     ["", "", ""],
   ];
-  #layout = this.#starterGameboard.map((row) => [...row]);
+
+  constructor() {
+    this.#layout = this.#starterGameboard.map((row) => [...row]);
+    this.#container = document.querySelector(".tic-tac-toe");
+  }
 
   renderBoard() {
-    const container = document.querySelector(".tic-tac-toe");
-    container.textContent = "";
-
     for (const index in this.#layout.flat()) {
       const cell = document.createElement("button");
       cell.className = "cell";
+      cell.dataset.attribute = index;
       cell.textContent = this.#layout.flat()[index];
-      cell["data-attribute"] = index;
-
-      container.appendChild(cell);
+      this.#container.appendChild(cell);
     }
   }
 
   getLayout() {
     return this.#layout;
+  }
+
+  setLayout(index, marker) {
+    const rowIndex = Math.floor(index / 3);
+    const cellIndex = index % 3;
+    this.#layout[rowIndex][cellIndex] = marker;
+
+    const cellPrev = this.#container.children[index];
+    const cellNew = document.createElement("button");
+
+    cellNew.className = "cell";
+    cellNew.textContent = marker;
+    cellNew.dataset.attribute = index;
+    this.#container.replaceChild(cellNew, cellPrev);
   }
 
   resetGame() {
@@ -97,7 +113,7 @@ class Game {
     const container = document.querySelector(".tic-tac-toe");
 
     container.addEventListener("click", (event) => {
-      const selection = Number(event.target["data-attribute"]);
+      const selection = Number(event.target.dataset.attribute);
 
       const rowIndex = Math.floor(selection / 3);
       const cellIndex = selection % 3;
@@ -105,12 +121,8 @@ class Game {
       // prevents overrides
       if (this.#gameboard.getLayout()[rowIndex][cellIndex]) return;
 
-      this.#gameboard.getLayout()[rowIndex][cellIndex] = this.#currentPlayer.getSign();
-      this.#round += 1;
-
-      console.log(this.isGameWon(this.#currentPlayer));
+      this.#gameboard.setLayout(selection, this.#currentPlayer.getSign());
       this.setNextPlayer(this.#currentPlayer);
-      this.#gameboard.renderBoard();
     });
   }
 
