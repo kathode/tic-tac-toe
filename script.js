@@ -59,6 +59,7 @@ class Game {
   #player2;
   #currentPlayer;
 
+  #storeWinningScenarios;
   #winningScenarios = [
     [0, 1, 2],
     [2, 5, 8],
@@ -92,18 +93,25 @@ class Game {
 
   isGameWon(player) {
     const playerSelections = this.getPlayerSelections(player);
+    this.#storeWinningScenarios = [];
 
-    return this.#winningScenarios.some((scenarios) => {
+    const scenariosWon = this.#winningScenarios.map((scenarios) => {
       const isWin = scenarios.every((scenario) => playerSelections.includes(scenario));
       if (!isWin) return false;
 
-      // Highlight winning cells
-      for (const cell of scenarios) {
-        this.#gameboard.setLayout(cell, player.getSign(), true);
-      }
-
+      this.#storeWinningScenarios.push(scenarios);
       return true;
     });
+
+    return scenariosWon.some(Boolean);
+  }
+
+  highlightWinningCells() {
+    for (const scenarios of this.#storeWinningScenarios) {
+      for (const cell of scenarios) {
+        this.#gameboard.setLayout(cell, this.#currentPlayer.getSign(), true);
+      }
+    }
   }
 
   isGameDraw() {
@@ -128,6 +136,7 @@ class Game {
       this.#gameboard.setLayout(index, this.#currentPlayer.getSign());
 
       if (this.isGameWon(this.#currentPlayer)) {
+        this.highlightWinningCells();
         console.log("game won");
 
         this.rematch();
