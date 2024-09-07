@@ -19,7 +19,10 @@ class Gameboard {
     this.#container = document.querySelector(".tic-tac-toe");
   }
 
-  renderBoard() {
+  drawNewBoard() {
+    this.#container.textContent = "";
+    this.#layout = [...Array.from({ length: 9 }).fill("")];
+
     for (const index in this.#layout) {
       const cell = document.createElement("button");
       cell.className = "cell";
@@ -47,10 +50,6 @@ class Gameboard {
     cellNew.textContent = marker;
     cellNew.dataset.attribute = index;
     this.#container.replaceChild(cellNew, cellPrev);
-  }
-
-  resetBoard() {
-    this.#layout = Array.from({ length: 9 }).fill("");
   }
 }
 
@@ -129,7 +128,7 @@ class Game {
   playRound() {
     const container = document.querySelector(".tic-tac-toe");
 
-    container.addEventListener("click", (event) => {
+    const handleGamePlay = (event) => {
       const index = Number(event.target.dataset.attribute);
       if (this.#gameboard.getLayout(index)) return; // Prevents overriding previous player selection
 
@@ -137,22 +136,48 @@ class Game {
 
       if (this.isGameWon(this.#currentPlayer)) {
         this.highlightWinningCells();
-        console.log("game won");
-
         this.rematch();
+
+        container.removeEventListener("click", handleGamePlay);
       } else {
         this.setNextPlayer(this.#currentPlayer);
       }
-    });
+    };
+
+    container.addEventListener("click", handleGamePlay);
   }
 
   rematch() {
-    this.#round++;
+    const rematch = document.querySelector(".rematch-options");
+    rematch.style.opacity = 1;
+
+    const hideOptionsAfterClick = () => {
+      rematch.removeEventListener("click", handlePlayAgain);
+      rematch.style.opacity = 0;
+      this.startGame();
+    };
+
+    const handlePlayAgain = (event) => {
+      const yes = event.target.className === "play-again-yes";
+      const no = event.target.className === "play-again-no";
+
+      if (yes) {
+        this.#round++;
+        hideOptionsAfterClick();
+      }
+      if (no) {
+        this.#round = 0;
+        hideOptionsAfterClick();
+      }
+    };
+
+    rematch.addEventListener("click", handlePlayAgain);
   }
 
   startGame() {
+    // Randomly select player to start game
     this.#currentPlayer = Math.random() > 0.5 ? this.#player1 : this.#player2;
-    this.#gameboard.renderBoard();
+    this.#gameboard.drawNewBoard();
     this.playRound();
   }
 
