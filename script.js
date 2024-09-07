@@ -13,14 +13,9 @@
 class Gameboard {
   #layout;
   #container;
-  #starterGameboard = [
-    ["", "", ""],
-    ["", "", ""],
-    ["", "", ""],
-  ];
 
   constructor() {
-    this.#layout = this.#starterGameboard.map((row) => [...row]);
+    this.#layout = Array.from({ length: 9 }).fill("");
     this.#container = document.querySelector(".tic-tac-toe");
   }
 
@@ -53,7 +48,7 @@ class Gameboard {
   }
 
   resetGame() {
-    this.#layout = this.#starterGameboard.map((row) => [...row]);
+    this.#layout = Array.from({ length: 9 }).fill("");
   }
 }
 
