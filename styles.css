@@ -47,11 +47,12 @@ body {
 
   font-weight: 600;
 }
-
+.rematch-options button:hover,
 .cell:hover {
   background: rgb(96, 101, 103);
 }
 
+.rematch-options button:active,
 .cell:active {
   background: rgb(86, 91, 93);
 }
@@ -61,11 +62,29 @@ body {
 }
 
 .rematch-options {
+  padding-top: 1rem;
   opacity: 0;
+  display: grid;
+
+  grid-template-rows: 2fr 2fr;
+  gap: 4px;
 }
 
 .rematch-options p {
   user-select: none;
+}
+
+.rematch-options button {
+  display: block;
+  background-color: lightslategray;
+  border: none;
+  border-radius: 2px;
+  color: white;
+  font-weight: 600;
+  letter-spacing: 1px;
+
+  height: 30px;
+  width: 100%;
 }
 
 .statistics p {
