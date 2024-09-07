@@ -49,7 +49,7 @@ class Gameboard {
     this.#container.replaceChild(cellNew, cellPrev);
   }
 
-  resetGame() {
+  resetBoard() {
     this.#layout = Array.from({ length: 9 }).fill("");
   }
 }
