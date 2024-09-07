@@ -25,9 +25,29 @@ body {
   place-items: center;
 
   grid-template-columns: repeat(3, var(--cell-size));
+  gap: 4px;
 }
 
 .cell {
   height: var(--cell-size);
   width: var(--cell-size);
+
+  background-color: lightslategray;
+  border: none;
+  color: white;
+  border-radius: 2px;
+
+  font-weight: 600;
+}
+
+.cell:hover {
+  background: rgb(96, 101, 103);
+}
+
+.cell:active {
+  background: rgb(86, 91, 93);
+}
+
+.cell.win {
+  background: rgb(142, 204, 106);
 }
