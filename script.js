@@ -37,13 +37,13 @@ class Gameboard {
     return this.#layout;
   }
 
-  setLayout(index, marker) {
+  setLayout(index, marker, isWin = false) {
     this.#layout[index] = marker;
 
     const cellPrev = this.#container.children[index];
     const cellNew = document.createElement("button");
 
-    cellNew.className = "cell";
+    cellNew.className = `cell ${isWin ? "win" : ""}`;
     cellNew.textContent = marker;
     cellNew.dataset.attribute = index;
     this.#container.replaceChild(cellNew, cellPrev);
@@ -79,10 +79,10 @@ class Game {
   }
 
   getPlayerSelections(player) {
-    return this.#gameboard.getLayout().reduce((acc, row, rowIndex) => {
+    return this.#gameboard.getLayout().reduce((acc, row, index) => {
       for (const cellIndex in row) {
         if (row[cellIndex] === player.getSign()) {
-          acc.push(rowIndex * 3 + Number(cellIndex));
+          acc.push(index);
         }
       }
 
@@ -94,7 +94,15 @@ class Game {
     const playerSelections = this.getPlayerSelections(player);
 
     return this.#winningScenarios.some((scenarios) => {
-      return scenarios.every((scenario) => playerSelections.includes(scenario));
+      const isWin = scenarios.every((scenario) => playerSelections.includes(scenario));
+      if (!isWin) return false;
+
+      // Highlight winning cells
+      for (const cell of scenarios) {
+        this.#gameboard.setLayout(cell, player.getSign(), true);
+      }
+
+      return true;
     });
   }
 
@@ -106,6 +114,10 @@ class Game {
     return this.#round;
   }
 
+  getCurrentPlayer() {
+    return this.#currentPlayer;
+  }
+
   playRound() {
     const container = document.querySelector(".tic-tac-toe");
 
@@ -114,8 +126,19 @@ class Game {
       if (this.#gameboard.getLayout(index)) return; // Prevents overriding previous player selection
 
       this.#gameboard.setLayout(index, this.#currentPlayer.getSign());
-      this.setNextPlayer(this.#currentPlayer);
+
+      if (this.isGameWon(this.#currentPlayer)) {
+        console.log("game won");
+
+        this.rematch();
+      } else {
+        this.setNextPlayer(this.#currentPlayer);
+      }
     });
+  }
+
+  rematch() {
+    this.#round++;
   }
 
   startGame() {
@@ -131,10 +154,6 @@ class Game {
       this.#currentPlayer = this.#player1;
     }
   }
-
-  getCurrentPlayer() {
-    return this.#currentPlayer;
-  }
 }
 
 class Player {
@@ -148,6 +167,10 @@ class Player {
 
   getSign() {
     return this.#sign;
+  }
+
+  getName() {
+    return this.#name;
   }
 }
 
