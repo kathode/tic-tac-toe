@@ -67,7 +67,7 @@ body {
   display: grid;
 
   grid-template-rows: 2fr 2fr;
-  gap: 4px;
+  gap: 6px;
 }
 
 .rematch-options p {
@@ -78,7 +78,7 @@ body {
   display: block;
   background-color: lightslategray;
   border: none;
-  border-radius: 2px;
+  border-radius: 3px;
   color: white;
   font-weight: 600;
   letter-spacing: 1px;
