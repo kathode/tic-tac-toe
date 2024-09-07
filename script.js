@@ -53,26 +53,28 @@ class Game {
   #player1;
   #player2;
   #currentPlayer;
-
+  #gameboard;
+  #round;
+  #moves;
   #storeWinningScenarios;
-  #winningScenarios = [
-    [0, 1, 2],
-    [2, 5, 8],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [0, 4, 8],
-    [2, 4, 6],
-    [3, 4, 5],
-  ];
-
-  #gameboard = new Gameboard();
-  #round = 1;
-  #moves = 0;
+  #winningScenarios;
 
   constructor(player1, player2) {
     this.#player1 = player1;
     this.#player2 = player2;
+    this.#round = 1;
+    this.#moves = 0;
+    this.#gameboard = new Gameboard();
+    this.#winningScenarios = [
+      [0, 1, 2],
+      [2, 5, 8],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [0, 4, 8],
+      [2, 4, 6],
+      [3, 4, 5],
+    ];
   }
 
   getPlayerSelections(player) {
@@ -95,8 +97,7 @@ class Game {
       const isWin = scenarios.every((scenario) => playerSelections.includes(scenario));
       if (!isWin) return false;
 
-      this.#storeWinningScenarios.push(scenarios);
-      return true;
+      return this.#storeWinningScenarios.push(scenarios);
     });
 
     return scenariosWon.some(Boolean);
@@ -114,31 +115,18 @@ class Game {
     return !this.isGameWon(this.#player1) && !this.isGameWon(this.#player2) && this.#moves === 8;
   }
 
-  getRound() {
-    return this.#round;
-  }
-
-  getCurrentPlayer() {
-    return this.#currentPlayer;
-  }
-
   displayScores() {
     const statistics = document.querySelector(".statistics");
 
     for (const pTag of statistics.children) {
       const span = pTag.children[1];
 
-      switch (span.id) {
-        case "player-1-score":
-          span.textContent = this.#player1.getScore();
-          break;
-        case "player-2-score":
-          span.textContent = this.#player2.getScore();
-          break;
-        case "round-count":
-          span.textContent = this.getRound();
-        default:
-          break;
+      if (span.id === "player-1-score") {
+        span.textContent = this.#player1.getScore();
+      } else if (span.id === "player-2-score") {
+        span.textContent = this.#player2.getScore();
+      } else if (span.id === "round-count") {
+        span.textContent = this.#round;
       }
     }
   }
