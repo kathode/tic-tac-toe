@@ -16,14 +16,18 @@ body {
   box-sizing: border-box;
 }
 
+:root {
+  --cell-size: 50px;
+}
+
 .tic-tac-toe {
   display: grid;
   place-items: center;
 
-  grid-template-columns: 50px 50px 50px;
+  grid-template-columns: repeat(3, var(--cell-size));
 }
 
 .cell {
-  height: 50px;
-  width: 50px;
+  height: var(--cell-size);
+  width: var(--cell-size);
 }
