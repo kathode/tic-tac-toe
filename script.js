@@ -42,14 +42,10 @@ class Gameboard {
 
   setLayout(index, marker, isWin = false) {
     this.#layout[index] = marker;
-
     const cellPrev = this.#container.children[index];
-    const cellNew = document.createElement("button");
 
-    cellNew.className = `cell ${isWin ? "win" : ""}`;
-    cellNew.textContent = marker;
-    cellNew.dataset.attribute = index;
-    this.#container.replaceChild(cellNew, cellPrev);
+    cellPrev.className = `cell ${isWin ? "win" : ""}`;
+    cellPrev.textContent = marker;
   }
 }
 
@@ -114,7 +110,7 @@ class Game {
   }
 
   isGameDraw() {
-    return !this.isGameWon(this.#player1) && !this.isGameWon(this.#player2) && this.#round === 9;
+    return !this.isGameWon(this.#player1) && !this.isGameWon(this.#player2);
   }
 
   getRound() {
@@ -129,26 +125,20 @@ class Game {
     const statistics = document.querySelector(".statistics");
 
     for (const pTag of statistics.children) {
-      const oldSpan = pTag.children[0];
-      const newSpan = document.createElement("span");
+      const span = pTag.children[1];
 
-      switch (oldSpan.id) {
+      switch (span.id) {
         case "player-1-score":
-          newSpan.textContent = this.#player1.getScore();
-          newSpan.id = oldSpan.id;
+          span.textContent = this.#player1.getScore();
           break;
         case "player-2-score":
-          newSpan.textContent = this.#player2.getScore();
-          newSpan.id = oldSpan.id;
+          span.textContent = this.#player2.getScore();
           break;
         case "round-count":
-          newSpan.textContent = this.getRound();
-          newSpan.id = oldSpan.id;
+          span.textContent = this.getRound();
         default:
           break;
       }
-
-      pTag.replaceChild(newSpan, oldSpan);
     }
   }
 
@@ -184,6 +174,7 @@ class Game {
       rematch.removeEventListener("click", handlePlayAgain);
       rematch.style.opacity = 0;
       this.startGame();
+      this.displayScores();
     };
 
     const handlePlayAgain = (event) => {
@@ -198,8 +189,6 @@ class Game {
         this.#round = 1;
         this.#player1.setScore(0);
         this.#player2.setScore(0);
-        this.displayScores();
-
         hideOptionsAfterClick();
       }
     };
@@ -210,6 +199,7 @@ class Game {
   startGame() {
     // Randomly select player to start game
     this.#currentPlayer = Math.random() > 0.5 ? this.#player1 : this.#player2;
+    this.showCurrentPlayerIndicator();
     this.#gameboard.drawNewBoard();
     this.playRound();
   }
@@ -219,6 +209,25 @@ class Game {
       this.#currentPlayer = this.#player2;
     } else {
       this.#currentPlayer = this.#player1;
+    }
+
+    this.showCurrentPlayerIndicator();
+  }
+
+  showCurrentPlayerIndicator() {
+    const statistics = document.querySelector(".statistics");
+    const [player1, player2] = statistics.children;
+
+    if (this.#currentPlayer === this.#player1) {
+      player1.classList.add("active");
+    } else {
+      player1.classList.remove("active");
+    }
+
+    if (this.#currentPlayer === this.#player2) {
+      player2.classList.add("active");
+    } else {
+      player2.classList.remove("active");
     }
   }
 }
